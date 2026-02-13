@@ -31,6 +31,8 @@ function App() {
 
   // Initialize Puzzle
   useEffect(() => {
+    // shufflePuzzle is stable; we intentionally call it once on mount
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     shufflePuzzle()
   }, [])
 
@@ -66,7 +68,7 @@ function App() {
       setCurrentImageIndex((i) => (i + 1) % carouselImages.length)
     }, 3800)
     return () => clearInterval(id)
-  }, [isPaused])
+  }, [isPaused, carouselImages.length])
 
   // --- Animations (GSAP) ---
   useEffect(() => {
@@ -138,26 +140,20 @@ function App() {
     }
     document.addEventListener('keydown', handleEsc)
     return () => document.removeEventListener('keydown', handleEsc)
+    // closeModal is a stable function declaration; avoid exhaustive-deps here
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [modalOpen])
-
-  // Carousel auto-advance
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setCurrentImageIndex((prev) => (prev + 1) % carouselImages.length)
-    }, 3000)
-    return () => clearInterval(interval)
-  }, [])
 
   // --- Logic ---
 
-  const shufflePuzzle = () => {
+  function shufflePuzzle() {
     const shuffled = [...allLetters].sort(() => Math.random() - 0.5)
     setLetters(shuffled)
     setAttempt('')
     setUnlocked(false)
     // Reset win message visibility if needed
     if (winMessageRef.current) {
-        gsap.set(winMessageRef.current, { autoAlpha: 0, scale: 1 })
+      gsap.set(winMessageRef.current, { autoAlpha: 0, scale: 1 })
     }
   }
 
@@ -199,12 +195,12 @@ function App() {
     }
   }
 
-  const openModal = () => {
+  function openModal() {
     setModalOpen(true)
     if (lenisRef.current) lenisRef.current.stop()
   }
 
-  const closeModal = () => {
+  function closeModal() {
     setModalOpen(false)
     if (lenisRef.current) lenisRef.current.start()
   }
