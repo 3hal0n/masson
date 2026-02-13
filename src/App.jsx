@@ -15,6 +15,7 @@ function App() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const [currentImageIndex, setCurrentImageIndex] = useState(0)
   const [loading, setLoading] = useState(true)
+  const [isPaused, setIsPaused] = useState(false)
   
   const carouselImages = ['/images/img1.jpeg', '/images/img2.jpeg', '/images/img3.jpeg']
   
@@ -57,6 +58,15 @@ function App() {
     const t = setTimeout(() => setLoading(false), 1400)
     return () => clearTimeout(t)
   }, [])
+
+  // Carousel autoplay
+  useEffect(() => {
+    if (isPaused) return undefined
+    const id = setInterval(() => {
+      setCurrentImageIndex((i) => (i + 1) % carouselImages.length)
+    }, 3800)
+    return () => clearInterval(id)
+  }, [isPaused])
 
   // --- Animations (GSAP) ---
   useEffect(() => {
@@ -295,11 +305,11 @@ function App() {
 
       {/* Navbar */}
       <nav className="fixed w-full z-40 top-4 px-4 md:px-8">
-        <div className="max-w-7xl mx-auto nav-backdrop border border-white/6 rounded-full">
+        <div className="max-w-7xl mx-auto nav-backdrop border border-white/6 rounded-2xl md:rounded-full">
         <div className="flex items-center justify-between py-2 px-4">
           <a href="#" className="flex items-center gap-3 text-white no-underline">
             <img src="/images/logo.png" alt="Masson House" className="w-9 h-9 rounded-full object-cover" />
-            <div className="hidden md:block font-display font-bold tracking-tight">Masson House</div>
+            <div className="font-display font-bold tracking-tight">Masson House</div>
           </a>
           <div className="hidden md:flex items-center gap-6 text-sm text-blue-100/70">
             <a href="#game-section" className="hover:text-white transition-colors">Cipher</a>
@@ -507,17 +517,49 @@ function App() {
 
             <div className="flex items-center justify-center">
               <div className="w-full max-w-md rounded-xl overflow-hidden bg-gradient-to-br from-black/40 to-black/20 border border-blue-500/20 p-2 relative">
-                <div className="aspect-video rounded-lg relative overflow-hidden">
+                <div
+                  className="aspect-video rounded-lg relative overflow-hidden"
+                  onMouseEnter={() => setIsPaused(true)}
+                  onMouseLeave={() => setIsPaused(false)}
+                >
                   {carouselImages.map((img, index) => (
-                    <img 
+                    <img
                       key={index}
-                      src={img} 
+                      src={img}
                       alt={`Masson House ${index + 1}`}
                       className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-700 ${
                         index === currentImageIndex ? 'opacity-100' : 'opacity-0'
                       }`}
                     />
                   ))}
+
+                  {/* Prev / Next Controls */}
+                  <button
+                    onClick={() => setCurrentImageIndex((currentImageIndex - 1 + carouselImages.length) % carouselImages.length)}
+                    className="absolute left-3 top-1/2 -translate-y-1/2 bg-black/30 hover:bg-black/50 text-white rounded-full w-9 h-9 flex items-center justify-center shadow-md"
+                    aria-label="Previous"
+                  >
+                    ‹
+                  </button>
+                  <button
+                    onClick={() => setCurrentImageIndex((currentImageIndex + 1) % carouselImages.length)}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 bg-black/30 hover:bg-black/50 text-white rounded-full w-9 h-9 flex items-center justify-center shadow-md"
+                    aria-label="Next"
+                  >
+                    ›
+                  </button>
+
+                  {/* Indicators */}
+                  <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex gap-2">
+                    {carouselImages.map((_, i) => (
+                      <button
+                        key={i}
+                        onClick={() => setCurrentImageIndex(i)}
+                        className={`w-2 h-2 rounded-full ${i === currentImageIndex ? 'bg-white' : 'bg-white/30'}`}
+                        aria-label={`Go to slide ${i + 1}`}
+                      />
+                    ))}
+                  </div>
                 </div>
                 {/* Carousel Indicators */}
                 <div className="flex justify-center gap-2 mt-3">

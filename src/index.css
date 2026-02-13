@@ -71,7 +71,10 @@ html.lenis { height: auto; }
 /* Navbar */
 .nav-backdrop { 
   background: linear-gradient(90deg, rgba(3,7,18,0.6), rgba(2,6,23,0.4)); 
-  backdrop-filter: blur(6px); 
+  backdrop-filter: blur(6px);
+  /* subtle white outline to lift navbar */
+  box-shadow: 0 0 0 1px rgba(255,255,255,0.06) inset, 0 6px 18px rgba(2,6,23,0.55);
+  outline: 1px solid rgba(255,255,255,0.02);
 }
 
 /* About underline */
@@ -125,6 +128,30 @@ html.lenis { height: auto; }
   padding: 2px;
   animation: borderShift 6s linear infinite;
 }
+
+/* diagonal sheen / band that moves across highlights */
+.glass-card::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  border-radius: 14px;
+  background: linear-gradient(120deg, rgba(6,18,45,0.28) 20%, rgba(37,99,235,0.12) 45%, rgba(6,18,45,0.28) 70%);
+  transform: translateX(-120%) skewX(-18deg);
+  opacity: 0.95;
+  mix-blend-mode: overlay;
+  animation: sheenMove 10s linear infinite;
+}
+
+@keyframes sheenMove {
+  0% { transform: translateX(-150%) skewX(-18deg); }
+  50% { transform: translateX(0%) skewX(-18deg); }
+  100% { transform: translateX(150%) skewX(-18deg); }
+}
+
+/* on hover make sheen more pronounced */
+.glass-card:hover::after { opacity: 1; animation-duration: 6s; }
 
 @keyframes borderShift { 
   0% { transform: rotate(0deg); }
