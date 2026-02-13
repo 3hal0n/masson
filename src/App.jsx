@@ -354,7 +354,7 @@ function App() {
               Ave Maria Convent • Sports Meet 2026
             </div>
             
-            <h1 className="font-display text-[clamp(2.5rem,10vw,10rem)] md:text-[clamp(4rem,12vw,11rem)] leading-[0.85] font-black tracking-tighter text-transparent bg-clip-text bg-gradient-to-b from-white via-white to-blue-900 drop-shadow-2xl select-none max-w-[85vw] md:max-w-[95%] mx-auto">
+              <h1 className="font-display text-[clamp(2.5rem,10vw,10rem)] md:text-[clamp(4rem,12vw,11rem)] leading-[0.85] font-black tracking-tighter text-transparent bg-clip-text bg-gradient-to-b from-white via-white to-blue-900 drop-shadow-2xl select-none w-full pr-4 pb-2 mx-auto">
               MASSON
             </h1>
             
