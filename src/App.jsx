@@ -681,7 +681,7 @@ function App() {
           <div className="w-full max-w-6xl aspect-video bg-black rounded-lg overflow-hidden border border-white/10 shadow-[0_0_50px_rgba(37,99,235,0.2)] relative">
             <iframe 
               className="w-full h-full" 
-              src="https://www.youtube.com/embed/jfKfPfyJRdk?autoplay=1&mute=0" 
+              src="https://www.youtube.com/embed/ZCbuEQKNwzE?autoplay=1&mute=0" 
               title="YouTube video player" 
               frameBorder="0" 
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
