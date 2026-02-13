@@ -13,6 +13,9 @@ function App() {
   const [letters, setLetters] = useState([])
   const [inView, setInView] = useState(false)
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+  const [currentImageIndex, setCurrentImageIndex] = useState(0)
+  
+  const carouselImages = ['/images/img1.jpeg', '/images/img2.jpeg', '/images/img3.jpeg']
   
   const lenisRef = useRef(null)
   const puzzleContainerRef = useRef(null)
@@ -75,26 +78,15 @@ function App() {
       }
     })
 
-    // Marquee Scroll Effect
-    gsap.to("#marquee", {
-      xPercent: -10,
-      ease: "none",
-      scrollTrigger: {
-        trigger: "#marquee",
-        start: "top bottom",
-        end: "bottom top",
-        scrub: 1
-      }
-    })
-
     // Text Reveal
     gsap.from("#text-reveal", {
       y: 30,
       opacity: 0,
       duration: 1,
+      clearProps: 'all',
       scrollTrigger: {
         trigger: "#text-reveal",
-        start: "top 85%",
+        start: "top 90%",
       }
     })
 
@@ -107,12 +99,13 @@ function App() {
     })
 
     // Highlights Cards Entrance
-    gsap.from('.glass-card', {
+    gsap.from('#highlights .grid > div', {
       y: 24,
       opacity: 0,
       duration: 0.9,
       stagger: 0.12,
       ease: 'power2.out',
+      clearProps: 'all',
       scrollTrigger: { trigger: '#highlights', start: 'top 80%' }
     })
 
@@ -129,6 +122,14 @@ function App() {
     document.addEventListener('keydown', handleEsc)
     return () => document.removeEventListener('keydown', handleEsc)
   }, [modalOpen])
+
+  // Carousel auto-advance
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentImageIndex((prev) => (prev + 1) % carouselImages.length)
+    }, 3000)
+    return () => clearInterval(interval)
+  }, [])
 
   // --- Logic ---
 
@@ -259,21 +260,12 @@ function App() {
           background: rgba(255,255,255,0.04);
           border-radius: 14px;
           padding: 28px;
-          border: 1px solid rgba(255,255,255,0.06);
+          border: 1px solid rgba(59,130,246,0.15);
           backdrop-filter: blur(8px);
           transition: transform 0.35s ease, box-shadow 0.35s ease;
-          position: relative; overflow: hidden;
+          position: relative;
         }
         .glass-card:hover { transform: translateY(-8px); box-shadow: 0 20px 60px rgba(59,130,246,0.12); }
-        .glass-card::before {
-          content: '';
-          position: absolute; inset: -2px; z-index: -1; border-radius: 16px;
-          background: linear-gradient(120deg, rgba(96,165,250,0.15), rgba(59,130,246,0.06));
-          mask: linear-gradient(#000, #000) content-box, linear-gradient(#000, #000);
-          padding: 2px;
-          animation: borderShift 6s linear infinite;
-        }
-        @keyframes borderShift { 0%{transform:rotate(0deg)}50%{transform:rotate(180deg)}100%{transform:rotate(360deg)} }
 
         /* CTA Background */
         .cta-hero { background: linear-gradient(120deg, rgba(14,165,233,0.06), rgba(59,130,246,0.06)); }
@@ -356,13 +348,13 @@ function App() {
 
       <main>
         {/* Hero Section */}
-        <section className="min-h-screen flex flex-col items-center justify-center relative z-10 overflow-hidden py-20">
-          <div id="hero-content" className="text-center relative px-4 w-full max-w-7xl mx-auto flex flex-col items-center">
+        <section className="min-h-screen flex flex-col items-center justify-center relative z-10 py-20">
+          <div id="hero-content" className="text-center relative px-4 w-full max-w-7xl mx-auto flex flex-col items-center overflow-visible">
             <div className="text-blue-400 font-medium tracking-[0.3em] uppercase mb-6 text-xs md:text-sm border border-blue-500/20 px-4 py-2 rounded-full backdrop-blur-sm">
               Ave Maria Convent • Sports Meet 2026
             </div>
             
-            <h1 className="font-display text-[clamp(3rem,12vw,12rem)] leading-[0.85] font-black tracking-tighter text-transparent bg-clip-text bg-gradient-to-b from-white via-white to-blue-900 drop-shadow-2xl select-none max-w-[90vw] mx-auto">
+            <h1 className="font-display text-[clamp(2.5rem,10vw,10rem)] md:text-[clamp(4rem,12vw,11rem)] leading-[0.85] font-black tracking-tighter text-transparent bg-clip-text bg-gradient-to-b from-white via-white to-blue-900 drop-shadow-2xl select-none max-w-[85vw] md:max-w-[95%] mx-auto">
               MASSON
             </h1>
             
@@ -386,11 +378,26 @@ function App() {
         </section>
 
         {/* Marquee Section */}
-        <section className="py-16 md:py-24 relative z-10 border-y border-white/5 backdrop-blur-sm bg-black/20 overflow-hidden">
-          <div className="flex whitespace-nowrap" id="marquee">
-            <div className="flex gap-8 text-6xl md:text-9xl font-display font-black text-stroke text-stroke-sm opacity-30 px-4 select-none">
-              <span>SPEED</span> <span>•</span> <span>STRENGTH</span> <span>•</span> <span>SPIRIT</span> <span>•</span> <span>MASSON</span> <span>•</span>
-              <span>SPEED</span> <span>•</span> <span>STRENGTH</span> <span>•</span> <span>SPIRIT</span> <span>•</span> <span>MASSON</span> <span>•</span>
+        <section className="py-16 md:py-24 relative z-10 border-y border-blue-500/20 backdrop-blur-sm bg-gradient-to-r from-blue-950/30 via-blue-900/20 to-blue-950/30 overflow-hidden">
+          <div className="marquee-container">
+            <div className="marquee-content flex gap-8 text-6xl md:text-9xl font-display font-black whitespace-nowrap px-4 select-none">
+              <span className="text-blue-400/60">SPEED</span> <span className="text-blue-300/40">•</span>
+              <span className="text-blue-400/60">STRENGTH</span> <span className="text-blue-300/40">•</span>
+              <span className="text-blue-400/60">SPIRIT</span> <span className="text-blue-300/40">•</span>
+              <span className="text-blue-500/70">MASSON</span> <span className="text-blue-300/40">•</span>
+              <span className="text-blue-400/60">SPEED</span> <span className="text-blue-300/40">•</span>
+              <span className="text-blue-400/60">STRENGTH</span> <span className="text-blue-300/40">•</span>
+              <span className="text-blue-400/60">SPIRIT</span> <span className="text-blue-300/40">•</span>
+              <span className="text-blue-500/70">MASSON</span> <span className="text-blue-300/40">•</span>
+              {/* Duplicate for seamless loop */}
+              <span className="text-blue-400/60">SPEED</span> <span className="text-blue-300/40">•</span>
+              <span className="text-blue-400/60">STRENGTH</span> <span className="text-blue-300/40">•</span>
+              <span className="text-blue-400/60">SPIRIT</span> <span className="text-blue-300/40">•</span>
+              <span className="text-blue-500/70">MASSON</span> <span className="text-blue-300/40">•</span>
+              <span className="text-blue-400/60">SPEED</span> <span className="text-blue-300/40">•</span>
+              <span className="text-blue-400/60">STRENGTH</span> <span className="text-blue-300/40">•</span>
+              <span className="text-blue-400/60">SPIRIT</span> <span className="text-blue-300/40">•</span>
+              <span className="text-blue-500/70">MASSON</span> <span className="text-blue-300/40">•</span>
             </div>
           </div>
         </section>
@@ -399,7 +406,7 @@ function App() {
         <section className="min-h-screen flex items-center justify-center relative z-10 px-4 py-20 md:py-32" id="game-section">
           <div className="max-w-6xl w-full grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-center">
             
-            <div className="space-y-6 md:space-y-8 text-center lg:text-left order-2 lg:order-1 block" id="text-reveal">
+            <div className="space-y-6 md:space-y-8 text-center lg:text-left order-1" id="text-reveal" style={{display: 'block', visibility: 'visible', opacity: 1}}>
               <h2 className="font-display text-3xl md:text-6xl font-bold leading-[0.9]">
                 UNLOCK THE <br />
                 <span className="text-blue-500 drop-shadow-[0_0_20px_rgba(37,99,235,0.4)]">LEGACY.</span>
@@ -423,7 +430,7 @@ function App() {
               </div>
             </div>
 
-            <div className="relative group order-1 lg:order-2">
+            <div className="relative group order-2">
               <div className="absolute -inset-1 bg-gradient-to-r from-blue-600 to-indigo-600 rounded-2xl blur opacity-25 group-hover:opacity-50 transition duration-1000"></div>
               
               <div className="relative bg-gray-900/80 backdrop-blur-xl border border-white/10 rounded-2xl p-6 md:p-8">
@@ -482,8 +489,34 @@ function App() {
             </div>
 
             <div className="flex items-center justify-center">
-              <div className="w-full max-w-md rounded-xl overflow-hidden bg-gradient-to-br from-black/40 to-black/20 border border-white/6 p-4">
-                <div className="aspect-video bg-gradient-to-br from-blue-900 to-indigo-900 rounded-lg relative animate-pulse-slow flex items-center justify-center text-sm text-blue-100/60">Animated Image Placeholder</div>
+              <div className="w-full max-w-md rounded-xl overflow-hidden bg-gradient-to-br from-black/40 to-black/20 border border-blue-500/20 p-2 relative">
+                <div className="aspect-video rounded-lg relative overflow-hidden">
+                  {carouselImages.map((img, index) => (
+                    <img 
+                      key={index}
+                      src={img} 
+                      alt={`Masson House ${index + 1}`}
+                      className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-700 ${
+                        index === currentImageIndex ? 'opacity-100' : 'opacity-0'
+                      }`}
+                    />
+                  ))}
+                </div>
+                {/* Carousel Indicators */}
+                <div className="flex justify-center gap-2 mt-3">
+                  {carouselImages.map((_, index) => (
+                    <button
+                      key={index}
+                      onClick={() => setCurrentImageIndex(index)}
+                      className={`w-2 h-2 rounded-full transition-all ${
+                        index === currentImageIndex 
+                          ? 'bg-blue-400 w-8' 
+                          : 'bg-blue-400/30 hover:bg-blue-400/50'
+                      }`}
+                      aria-label={`Go to image ${index + 1}`}
+                    />
+                  ))}
+                </div>
               </div>
             </div>
           </div>
@@ -498,15 +531,15 @@ function App() {
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
-              <div className="glass-card flex flex-col items-start gap-4">
+              <div className="bg-white/[0.04] rounded-[14px] p-7 border border-blue-500/15 backdrop-blur-lg flex flex-col items-start gap-4 hover:-translate-y-2 hover:shadow-[0_20px_60px_rgba(59,130,246,0.12)] transition-all duration-300">
                 <div className="text-blue-300 font-bold text-lg">Speed</div>
                 <p className="text-gray-400 text-sm">Reflexes and quickness on the track.</p>
               </div>
-              <div className="glass-card flex flex-col items-start gap-4">
+              <div className="bg-white/[0.04] rounded-[14px] p-7 border border-blue-500/15 backdrop-blur-lg flex flex-col items-start gap-4 hover:-translate-y-2 hover:shadow-[0_20px_60px_rgba(59,130,246,0.12)] transition-all duration-300">
                 <div className="text-blue-300 font-bold text-lg">Strength</div>
                 <p className="text-gray-400 text-sm">Power built through discipline and training.</p>
               </div>
-              <div className="glass-card flex flex-col items-start gap-4">
+              <div className="bg-white/[0.04] rounded-[14px] p-7 border border-blue-500/15 backdrop-blur-lg flex flex-col items-start gap-4 hover:-translate-y-2 hover:shadow-[0_20px_60px_rgba(59,130,246,0.12)] transition-all duration-300">
                 <div className="text-blue-300 font-bold text-lg">Spirit</div>
                 <p className="text-gray-400 text-sm">Team energy that propels us forward.</p>
               </div>
@@ -517,10 +550,10 @@ function App() {
         {/* Final CTA Section */}
         <section id="final-cta" className="py-20 md:py-40 relative z-10">
           <div className="max-w-7xl mx-auto px-4">
-            <div className="rounded-3xl overflow-hidden p-12 cta-hero moving-bg text-white">
+            <div className="rounded-3xl overflow-hidden p-6 sm:p-12 cta-hero moving-bg text-white">
               <div className="max-w-4xl mx-auto text-center">
-                <h2 className="font-display text-5xl md:text-7xl font-extrabold leading-tight drop-shadow-lg">Blue Doesn't Follow. Blue Leads.</h2>
-                <p className="mt-6 text-gray-200/80">Join the ascendancy and witness Masson's rise.</p>
+                <h2 className="font-display text-3xl sm:text-5xl md:text-7xl font-extrabold leading-tight drop-shadow-lg">Blue Doesn&apos;t Follow. Blue Leads.</h2>
+                <p className="mt-6 text-gray-200/80 text-sm md:text-base">Join the ascendancy and witness Masson's rise.</p>
                 <div className="mt-8 flex items-center justify-center">
                   <button onClick={openModal} className="bg-blue-600 hover:bg-blue-500 px-8 py-4 rounded-full text-white font-bold shadow-lg transition-colors">Watch Masson Rise</button>
                 </div>
@@ -529,30 +562,49 @@ function App() {
           </div>
         </section>
 
-        {/* Video Preview Section */}
-        <section className="h-[50vh] flex flex-col items-center justify-center relative z-10 px-4">
-          <div className="w-full max-w-5xl opacity-50 hover:opacity-100 transition-opacity duration-500" id="video-card">
-            <div className="text-center mb-6">
-              <h3 className="text-sm md:text-base text-blue-200 font-light tracking-[0.3em] uppercase">Replay Premiere</h3>
-            </div>
-            
-            <div className="relative group aspect-video rounded-2xl overflow-hidden border border-white/10 bg-black shadow-2xl cursor-pointer" onClick={openModal}>
-              <div className="absolute inset-0 bg-gradient-to-br from-blue-900 via-black to-black opacity-60"></div>
-              <div className="absolute inset-0 flex items-center justify-center">
-                <div className="w-16 h-16 md:w-20 md:h-20 rounded-full bg-white/10 backdrop-blur-md border border-white/20 flex items-center justify-center group-hover:bg-blue-600 transition-all duration-300">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="white" stroke="none">
-                    <polygon points="5 3 19 12 5 21 5 3"/>
-                  </svg>
+        {/* Footer */}
+        <footer className="relative z-10 border-t border-blue-500/10 bg-gradient-to-b from-transparent to-blue-950/20">
+          <div className="max-w-7xl mx-auto px-4 py-16 md:py-20">
+            <div className="flex flex-col md:flex-row justify-between items-center gap-8">
+              {/* Brand */}
+              <div className="flex flex-col items-center md:items-start">
+                <h2 className="font-display text-5xl md:text-6xl font-black text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-blue-500 to-blue-600 mb-2">
+                  MASSON
+                </h2>
+                <p className="text-blue-300/60 text-sm tracking-wider">House of Blue</p>
+              </div>
+
+              {/* Made by */}
+              <div className="flex flex-col items-center md:items-end gap-2">
+                <div className="text-gray-400 text-sm">
+                  Made by <span className="text-blue-300 font-medium">Shalon Fernando</span>
                 </div>
+                <a 
+                  href="https://shalon.web.lk" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="group flex items-center gap-2 text-blue-400 hover:text-blue-300 transition-colors"
+                >
+                  <span className="text-sm">shalon.web.lk</span>
+                  <svg 
+                    className="w-4 h-4 transform group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" 
+                    fill="none" 
+                    stroke="currentColor" 
+                    viewBox="0 0 24 24"
+                  >
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                  </svg>
+                </a>
               </div>
             </div>
-          </div>
-        </section>
 
-        {/* Footer */}
-        <footer className="py-8 text-center text-gray-300 text-sm relative z-10 border-t border-white/5 tracking-widest">
-          <div>&copy; 2026 Masson House • Built for the blue</div>
-          <div className="mt-2 text-xs text-gray-400">Footer made by Shalon Fernando — <a href="https://shalon.web.lk" className="text-blue-300 hover:underline">shalon.web.lk</a></div>
+            {/* Bottom */}
+            <div className="mt-12 pt-8 border-t border-blue-500/10 text-center">
+              <p className="text-gray-500 text-xs">
+                &copy; 2026 Masson House. Ave Maria Convent.
+              </p>
+            </div>
+          </div>
         </footer>
 
       </main>
