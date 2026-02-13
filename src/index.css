@@ -1,1 +1,168 @@
 @import "tailwindcss";
+
+body { 
+  margin: 0; 
+  overflow-x: hidden; 
+  -webkit-font-smoothing: antialiased; 
+}
+
+/* Smooth Scroll Fixes */
+html.lenis { height: auto; } 
+.lenis.lenis-smooth { scroll-behavior: auto; } 
+.lenis.lenis-smooth [data-lenis-prevent] { overscroll-behavior: contain; } 
+.lenis.lenis-stopped { overflow: hidden; } 
+.lenis.lenis-scrolling iframe { pointer-events: none; } 
+
+/* Custom Utilities */
+.text-stroke {
+  -webkit-text-stroke: 1px rgba(59, 130, 246, 0.3);
+  color: transparent;
+}
+
+.text-stroke-sm {
+  -webkit-text-stroke: 0.5px rgba(59, 130, 246, 0.3);
+}
+
+.noise-bg {
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.05'/%3E%3C/svg%3E");
+}
+
+/* Puzzle Styles */
+#puzzle-container {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2px;
+  width: 100%;
+  max-width: 400px;
+  aspect-ratio: 1/1;
+  margin: 0 auto;
+  background: rgba(37, 99, 235, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  padding: 8px;
+  position: relative;
+}
+
+.tile {
+  cursor: pointer;
+  border-radius: 4px;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  position: relative;
+  overflow: hidden;
+  min-height: 64px;
+}
+
+.tile:hover {
+  z-index: 10;
+  transform: scale(1.02);
+  box-shadow: 0 0 15px rgba(37, 99, 235, 0.4);
+}
+
+.tile.empty {
+  background: transparent;
+  border: 1px dashed rgba(255, 255, 255, 0.1);
+  cursor: default;
+}
+
+.tile.correct {
+  filter: brightness(1.1);
+}
+
+/* Navbar */
+.nav-backdrop { 
+  background: linear-gradient(90deg, rgba(3,7,18,0.6), rgba(2,6,23,0.4)); 
+  backdrop-filter: blur(6px); 
+}
+
+/* About underline */
+.underline-anim {
+  position: relative;
+  display: inline-block;
+}
+
+.underline-anim::after {
+  content: '';
+  position: absolute;
+  left: 0; 
+  bottom: -6px;
+  height: 4px; 
+  width: 0;
+  background: linear-gradient(90deg,#60a5fa,#3b82f6,#93c5fd);
+  transition: width 0.7s cubic-bezier(.2,.9,.2,1);
+  border-radius: 4px;
+  box-shadow: 0 6px 20px rgba(59,130,246,0.18);
+}
+
+.underline-anim.in-view::after { 
+  width: 100%; 
+}
+
+/* Glass cards */
+.glass-card {
+  background: rgba(255,255,255,0.04);
+  border-radius: 14px;
+  padding: 28px;
+  border: 1px solid rgba(255,255,255,0.06);
+  backdrop-filter: blur(8px);
+  transition: transform 0.35s ease, box-shadow 0.35s ease;
+  position: relative; 
+  overflow: hidden;
+}
+
+.glass-card:hover { 
+  transform: translateY(-8px); 
+  box-shadow: 0 20px 60px rgba(59,130,246,0.12); 
+}
+
+.glass-card::before {
+  content: '';
+  position: absolute; 
+  inset: -2px; 
+  z-index: -1; 
+  border-radius: 16px;
+  background: linear-gradient(120deg, rgba(96,165,250,0.15), rgba(59,130,246,0.06));
+  mask: linear-gradient(#000, #000) content-box, linear-gradient(#000, #000);
+  padding: 2px;
+  animation: borderShift 6s linear infinite;
+}
+
+@keyframes borderShift { 
+  0% { transform: rotate(0deg); }
+  50% { transform: rotate(180deg); }
+  100% { transform: rotate(360deg); } 
+}
+
+/* CTA Background */
+.cta-hero { 
+  background: linear-gradient(120deg, rgba(14,165,233,0.06), rgba(59,130,246,0.06)); 
+}
+
+.moving-bg { 
+  background: linear-gradient(90deg,#0ea5e9,#3b82f6,#60a5fa); 
+  background-size: 200% 200%; 
+  animation: moveBg 8s linear infinite; 
+}
+
+@keyframes moveBg { 
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; } 
+}
+
+/* Responsive tweaks */
+@media (max-width: 640px) {
+  #puzzle-container { 
+    max-width: 320px; 
+  }
+  .glass-card { 
+    padding: 18px; 
+  }
+  #text-reveal {
+    display: block !important;
+    order: 2;
+  }
+  #game-section > div {
+    display: flex;
+    flex-direction: column;
+  }
+}
