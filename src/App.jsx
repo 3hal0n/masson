@@ -488,6 +488,35 @@ function App() {
                     Tap letters in order to spell MASSON — complete to unlock the video
                   </div>
 
+                  {/* Visible passcode display and controls */}
+                  <div className="col-span-3 mt-4 flex flex-col items-center gap-2">
+                    <div className="inline-flex items-center gap-2 bg-black/30 px-3 py-2 rounded-md border border-white/6">
+                      <div className="font-mono text-sm tracking-widest text-blue-200">
+                        { /* show entered attempt and placeholders for remaining letters */ }
+                        {Array.from({ length: targetWord.length }).map((_, idx) => (
+                          <span key={idx} className={`inline-block w-6 text-center ${idx < attempt.length ? 'text-white' : 'text-white/30'}`}>
+                            {attempt[idx] || '—'}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+
+                    <div className="flex items-center gap-3">
+                      <button
+                        onClick={() => setAttempt('')}
+                        className="text-xs px-3 py-1 bg-blue-900/20 border border-blue-500/20 rounded-md text-blue-200 hover:bg-blue-500/10 transition"
+                      >
+                        Clear
+                      </button>
+                      <button
+                        onClick={() => setAttempt((s) => s.slice(0, -1))}
+                        className="text-xs px-3 py-1 bg-blue-900/20 border border-blue-500/20 rounded-md text-blue-200 hover:bg-blue-500/10 transition"
+                      >
+                        Backspace
+                      </button>
+                    </div>
+                  </div>
+
                   {/* Win Message Overlay */}
                   <div 
                     ref={winMessageRef}
