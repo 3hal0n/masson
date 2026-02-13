@@ -186,3 +186,31 @@ html.lenis { height: auto; }
     flex-direction: column;
   }
 }
+
+/* Site loader / unveiling animation */
+.site-loader {
+  background: linear-gradient(180deg,#020617 0%, #071133 100%);
+  backdrop-filter: blur(6px);
+}
+.loader-inner { transform: translateY(0); }
+.logo-pop {
+  transform-origin: center;
+  animation: logoPop 900ms cubic-bezier(.2,.9,.2,1) forwards;
+  box-shadow: 0 12px 40px rgba(2,6,23,0.6);
+}
+.logo-text { opacity: 0; animation: textFade 900ms 260ms forwards; }
+
+@keyframes logoPop {
+  0% { transform: scale(0.45) rotate(-6deg); opacity: 0 }
+  60% { transform: scale(1.05) rotate(2deg); opacity: 1 }
+  100% { transform: scale(1) rotate(0deg); opacity: 1 }
+}
+
+@keyframes textFade {
+  0% { opacity: 0; transform: translateY(6px) }
+  100% { opacity: 1; transform: translateY(0) }
+}
+
+/* small fade-out when removed (kept for future enhancement) */
+.site-loader.fade-out { animation: loaderFadeOut 700ms ease forwards; }
+@keyframes loaderFadeOut { to { opacity: 0; visibility: hidden; transform: translateY(-6px) } }

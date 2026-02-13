@@ -14,6 +14,7 @@ function App() {
   const [inView, setInView] = useState(false)
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const [currentImageIndex, setCurrentImageIndex] = useState(0)
+  const [loading, setLoading] = useState(true)
   
   const carouselImages = ['/images/img1.jpeg', '/images/img2.jpeg', '/images/img3.jpeg']
   
@@ -49,6 +50,12 @@ function App() {
     requestAnimationFrame(raf)
 
     return () => lenis.destroy()
+  }, [])
+
+  // Loader: simple initial unveiling screen
+  useEffect(() => {
+    const t = setTimeout(() => setLoading(false), 1400)
+    return () => clearTimeout(t)
   }, [])
 
   // --- Animations (GSAP) ---
@@ -273,15 +280,25 @@ function App() {
         @keyframes moveBg { 0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%} }
       `}</style>
 
-      {/* Progress Bar */}
+          {/* Progress Bar */}
       <div id="progress-bar" className="fixed top-0 left-0 h-1 bg-gradient-to-r from-blue-600 via-blue-400 to-white z-50 w-0 shadow-[0_0_20px_rgba(37,99,235,0.8)]"></div>
+
+          {/* Loader / Unveiling screen */}
+          {loading && (
+            <div className="site-loader fixed inset-0 z-[120] flex items-center justify-center">
+              <div className="loader-inner flex flex-col items-center gap-4">
+                <img src="/images/logo.png" alt="Masson logo" className="w-20 h-20 rounded-full object-cover logo-pop" />
+                <div className="text-blue-300 tracking-widest text-sm logo-text">M A S S O N</div>
+              </div>
+            </div>
+          )}
 
       {/* Navbar */}
       <nav className="fixed w-full z-40 top-4 px-4 md:px-8">
         <div className="max-w-7xl mx-auto nav-backdrop border border-white/6 rounded-full">
         <div className="flex items-center justify-between py-2 px-4">
           <a href="#" className="flex items-center gap-3 text-white no-underline">
-            <div className="w-9 h-9 rounded-full bg-blue-600/80 flex items-center justify-center text-sm font-bold">M</div>
+            <img src="/images/logo.png" alt="Masson House" className="w-9 h-9 rounded-full object-cover" />
             <div className="hidden md:block font-display font-bold tracking-tight">Masson House</div>
           </a>
           <div className="hidden md:flex items-center gap-6 text-sm text-blue-100/70">
